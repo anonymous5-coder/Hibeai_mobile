@@ -11,14 +11,16 @@ export default defineConfig(({mode}) => {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-        'react-native/Libraries/Utilities/codegenNativeComponent': path.resolve(__dirname, './mockCodegenNativeComponent.js'),
-        'react-native/Libraries/Renderer/shims/ReactNativeViewConfigRegistry': path.resolve(__dirname, './mockReactNativeViewConfigRegistry.js'),
-        'react-native/Libraries/Pressability/PressabilityDebug': path.resolve(__dirname, './mockPressabilityDebug.js'),
-        'react-native/Libraries/Renderer/shims/ReactNative': path.resolve(__dirname, './mockReactNative.js'),
-        'react-native': path.resolve(__dirname, './react-native-web-stub.js'),
-      },
+      extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
+      alias: [
+        { find: '@', replacement: path.resolve(__dirname, '.') },
+        { find: 'react-native/Libraries/Utilities/codegenNativeComponent', replacement: path.resolve(__dirname, './mockCodegenNativeComponent.js') },
+        { find: 'react-native/Libraries/Renderer/shims/ReactNativeViewConfigRegistry', replacement: path.resolve(__dirname, './mockReactNativeViewConfigRegistry.js') },
+        { find: 'react-native/Libraries/Pressability/PressabilityDebug', replacement: path.resolve(__dirname, './mockPressabilityDebug.js') },
+        { find: 'react-native/Libraries/Renderer/shims/ReactNative', replacement: path.resolve(__dirname, './mockReactNative.js') },
+        { find: /^react-native$/, replacement: path.resolve(__dirname, './react-native-web-stub.js') },
+        { find: /^react-native\/(.*)/, replacement: 'react-native-web/$1' }
+      ]
     },
     optimizeDeps: {
       esbuildOptions: {
