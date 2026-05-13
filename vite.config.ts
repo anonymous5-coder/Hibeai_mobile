@@ -8,7 +8,12 @@ export default defineConfig(({mode}) => {
   return {
     plugins: [react(), tailwindcss()],
     define: {
+      global: 'globalThis',
+      __DEV__: mode !== 'production',
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.EXPO_PUBLIC_EMERGENT_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.APP_URL': JSON.stringify(env.APP_URL),
+      'process.env.EXPO_OS': JSON.stringify('web'),
     },
     resolve: {
       extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
@@ -18,8 +23,8 @@ export default defineConfig(({mode}) => {
         { find: 'react-native/Libraries/Renderer/shims/ReactNativeViewConfigRegistry', replacement: path.resolve(__dirname, './mockReactNativeViewConfigRegistry.js') },
         { find: 'react-native/Libraries/Pressability/PressabilityDebug', replacement: path.resolve(__dirname, './mockPressabilityDebug.js') },
         { find: 'react-native/Libraries/Renderer/shims/ReactNative', replacement: path.resolve(__dirname, './mockReactNative.js') },
-        { find: /^react-native$/, replacement: path.resolve(__dirname, './react-native-web-stub.js') },
-        { find: /^react-native\/(.*)/, replacement: 'react-native-web/$1' }
+        { find: 'react-native/Libraries/ReactNative/AppContainer', replacement: 'react-native-web/dist/exports/AppRegistry/AppContainer' },
+        { find: 'react-native', replacement: path.resolve(__dirname, './react-native-web-stub.js') }
       ]
     },
     optimizeDeps: {
@@ -27,6 +32,7 @@ export default defineConfig(({mode}) => {
         loader: {
           '.js': 'jsx',
         },
+        resolveExtensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
       },
     },
     server: {
